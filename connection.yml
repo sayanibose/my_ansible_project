@@ -1,0 +1,5 @@
+- name: connection playbook
+  hosts: all
+  gather_facts: false
+  roles:
+    - connection
