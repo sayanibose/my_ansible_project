@@ -1,0 +1,19 @@
+---
+# tasks file for connection
+- name: check SSH connection
+  wait_for_connection:
+    delay: 5
+    timeout: 15
+  register: checkcon
+  ignore_errors: true
+
+- name: Displaying message when connection is unsuccessful
+  fail:
+    msg: The connection is not successful
+  when: checkcon is failed
+
+- name: Displaying message when connection is successful
+  debug:
+    msg: "The connection is successful and here are the details----> {{ checkcon }}"
+  when: checkcon is success
+
