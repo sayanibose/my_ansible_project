@@ -1,7 +1,5 @@
 ---
 # tasks file for samplecode
----
-# tasks file for sample
 - name: Checking SSH connection
   wait_for_connection:
     delay: 5
