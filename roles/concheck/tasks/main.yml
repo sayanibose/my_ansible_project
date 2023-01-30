@@ -1,0 +1,227 @@
+---
+# tasks file for concheck
+- name: Checking SSH connection
+  wait_for_connection:
+    delay: 5
+    timeout: 15
+  register: checkcon
+  ignore_errors: true
+
+- name: Showing error message when connection is failed
+  fail:
+    msg: The connection has not established and here is the details --> "{{ checkcon }}"
+  when: checkcon is failed
+
+- name: Showing the success message when connection is success
+  debug:
+    msg: The connection has established and here is the details --> "{{ checkcon }}"
+  when: checkcon is success
+
+- name: Executing setup module
+  setup:
+  register: sysvalue
+
+- name: Fetching ansible ipv4
+  set_fact:
+    ipv4: "{{ sysvalue.ansible_facts.ansible_all_ipv4_addresses[1] }}"
+  when: sysvalue is defined
+
+- name: Showing ansible ipv4
+  debug:
+    msg: "The ansible ipv4 address is--> {{ ipv4 }}"
+  when: ipv4 is defined
+
+- name: Fetching ansible ipv6
+  set_fact:
+    ipv6: "{{ sysvalue.ansible_facts.ansible_all_ipv6_addresses }}"
+  when: sysvalue is defined
+
+- name: Showing ansible ipv6
+  debug:
+    msg: "The ansible ipv6 address is--> {{ ipv6 }}"
+  when: ipv6 is defined
+- name: Fetching ansible architecture
+  set_fact:
+    arch: "{{ sysvalue.ansible_facts.ansible_architecture }}"
+  when: sysvalue is defined
+
+- name: Showing ansible architecture
+  debug:
+    msg: "The ansible architecture is--> {{ arch }}"
+  when: arch is defined
+
+- name: Fetching ansible bios_date
+  set_fact:
+    bdate: "{{ sysvalue.ansible_facts.ansible_bios_date }}"
+  when: sysvalue is defined
+
+- name: Showing ansible bios_date
+  debug:
+    msg: "The ansible bios date is--> {{ bdate }}"
+  when: bdate is defined
+
+- name: Fetching ansible bios_version
+  set_fact:
+    bversion: "{{ sysvalue.ansible_facts.ansible_bios_version }}"
+  when: sysvalue is defined
+
+- name: Showing ansible bios_version
+  debug:
+    msg: "The ansible bios version is--> {{ bversion }}"
+  when: bversion is defined
+
+- name: Fetching current date
+  set_fact:
+    date: "{{ sysvalue.ansible_facts.ansible_date_time.date }}"
+  when: sysvalue is defined
+
+- name: Showing current date
+  debug:
+    msg: "The date is--> {{ date }}"
+  when: date is defined
+- name: Fetching ansible distribution
+  set_fact:
+    dist: "{{ sysvalue.ansible_facts.ansible_distribution }}"
+  when: sysvalue is defined
+
+- name: Showing ansible distribution
+  debug:
+    msg: "The ansible distribution is--> {{ dist }}"
+  when: dist is defined
+
+- name: Fetching ansible dns
+  set_fact:
+    dns: "{{ sysvalue.ansible_facts.ansible_dns }}"
+  when: sysvalue is defined
+
+- name: Showing ansible dns
+  debug:
+    msg: "The ansible dns are--> {{ dns }}"
+  when: dns is defined
+
+- name: Fetching ansible domain
+  set_fact:
+    domain: "{{ sysvalue.ansible_facts.ansible_domain }}"
+  when: sysvalue is defined
+
+- name: Showing ansible domain
+  debug:
+    msg: "The ansible domain is--> {{ domain }}"
+  when: domain is defined
+
+- name: Fetching ansible hostname
+  set_fact:
+    hostname: "{{ sysvalue.ansible_facts.ansible_hostname }}"
+  when: sysvalue is defined
+
+- name: Showing ansible hostname
+  debug:
+    msg: "The ansible hostname is--> {{ hostname }}"
+  when: hostname is defined
+- name: Fetching ansible_os_family
+  set_fact:
+    osfamily: "{{ sysvalue.ansible_facts.ansible_os_family }}"
+  when: sysvalue is defined
+
+- name: Showing ansible_os_family
+  debug:
+    msg: "The ansible os family is--> {{ osfamily }}"
+  when: osfamily is defined
+
+- name: Fetching ansible_system
+  set_fact:
+    asys: "{{ sysvalue.ansible_facts.ansible_system }}"
+  when: sysvalue is defined
+
+- name: Showing ansible_system
+  debug:
+    msg: "The ansible system is--> {{ asys }}"
+  when: asys is defined
+
+- name: Fetching ansible_system_vendor
+  set_fact:
+    asysvendor: "{{ sysvalue.ansible_facts.ansible_system_vendor }}"
+  when: sysvalue is defined
+
+- name: Showing ansible_system_vendor
+  debug:
+    msg: "The ansible system vendor is--> {{ asysvendor }}"
+  when: asysvendor is defined
+
+- name: Fetching ansible_user_directory
+  set_fact:
+    audir: "{{ sysvalue.ansible_facts.ansible_user_dir }}"
+  when: sysvalue is defined
+
+- name: Showing ansible_user_directory
+  debug:
+    msg: "The ansible user directory is--> {{ audir }}"
+  when: audir is defined
+- name: Fetching ansible_user
+  set_fact:
+    auser: "{{ sysvalue.ansible_facts.ansible_user_gecos }}"
+  when: sysvalue is defined
+
+- name: Showing ansible_user
+  debug:
+    msg: "The ansible user is--> {{ auser }}"
+  when: auser is defined
+
+- name: Fetching ansible_user_gid
+  set_fact:
+    augid: "{{ sysvalue.ansible_facts.ansible_user_gid }}"
+  when: sysvalue is defined
+
+- name: Showing ansible_user_gid
+  debug:
+    msg: "The ansible user gid is--> {{ augid }}"
+  when: augid is defined
+
+- name: Fetching ansible_user_id
+  set_fact:
+    auid: "{{ sysvalue.ansible_facts.ansible_user_id }}"
+  when: sysvalue is defined
+
+- name: Showing ansible_user_id
+  debug:
+    msg: "The ansible user id is--> {{ auid }}"
+  when: auid is defined
+
+- name: Creating directory
+  file:
+    path: /tmp/sayani
+    mode: '0755'
+    state: directory
+  when: checkcon is success
+- name: Creating a file in the directory /tmp/sayani
+  file:
+    path: /tmp/sayani/setupdata.txt
+    mode: '0755'
+    state: touch
+  when: checkcon is success
+
+- name: Writing setup details in the file /tmp/sayani/setupdata.txt
+  copy:
+    dest: /tmp/sayani/setupdata.txt
+    content: |
+       "The ansible user id is--> {{ auid }}"
+       "The ansible user gid is--> {{ augid }}"
+       "The ansible user is--> {{ auser }}"
+       "The ansible user directory is--> {{ audir }}"
+       "The ansible system vendor is--> {{ asysvendor }}"
+       "The ansible system is--> {{ asys }}"
+       "The ansible os family is--> {{ osfamily }}"
+       "The ansible hostname is--> {{ hostname }}"
+       "The ansible domain is--> {{ domain }}"
+       "The ansible dns are--> {{ dns }}"
+       "The ansible distribution is--> {{ dist }}"
+       "The date is--> {{ date }}"
+       "The ansible bios version is--> {{ bversion }}"
+       "The ansible bios date is--> {{ bdate }}"
+       "The ansible architecture is--> {{ arch }}"
+       "The ansible ipv6 address is--> {{ ipv6 }}"
+       "The ansible ipv4 address is--> {{ ipv4 }}"
+  when: checkcon is success
+
+ 
+
