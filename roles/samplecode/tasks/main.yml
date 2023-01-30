@@ -1,0 +1,81 @@
+---
+# tasks file for samplecode
+---
+# tasks file for sample
+- name: Checking SSH connection
+  wait_for_connection:
+    delay: 5
+    timeout: 10
+  register: checkcon
+
+- name: Showing success message when connection is successful
+  debug:
+    msg: The connection is ok
+  when: checkcon is successful
+
+- name: Showing error message when connection is failed
+  fail:
+   msg: The connection is not established
+  when: checkcon is failed
+
+- name: Fetching hostname
+  set_fact:
+    hostname: "{{ ansible_facts.hostname }}"
+
+- name: Creating a file when connection established
+  file:
+    path: /tmp/sayani/ab.txt
+    mode: '0755'
+    state: touch
+  when: checkcon is success
+
+- name: Writing the host name in the file /tmp/sayani/ab.txt
+  lineinfile:
+    path: /tmp/sayani/ab.txt
+    line: " The hostname is---> {{ hostname }}"
+    insertbefore: EOF
+  when: hostname is defined
+
+- name: Creating a blank file
+  file:
+    path: /tmp/sayani/mydata.txt
+    mode: '0755'
+    state: touch
+  when: checkcon is success
+
+- name: Adding content in the file /tmp/sayani/mydata.txt
+  copy:
+    dest: /tmp/sayani/mydata.txt
+    content: |
+      Name:SAYANI BOSE
+      Doj:23.08.2022
+      Work Location:NOIDA
+      Tower:5
+      Role:PGET
+      Department:Dryice IAUTO
+  when: checkcon is success
+
+- name: Deploying template file to target
+  template:
+    src: newtext.sh.j2
+    dest: /tmp/sayani/newtext.sh
+  when: checkcon is success
+
+- name: Executing template
+  command: /bin/sh "/tmp/sayani/newtext.sh"
+  when: checkcon is success
+
+- name: Creating a blank file
+  file:
+    path: /tmp/sayani/condetails.txt
+    mode: '0755'
+    state: touch
+  when: checkcon is success
+
+- name: Adding ssh connection details to the file /tmp/sayani/condetails.txt
+  lineinfile:
+    path: /tmp/sayani/condetails.txt
+    line: "The connection details are ----> {{ checkcon }}"
+    insertbefore: EOF
+  when: checkcon is success
+
