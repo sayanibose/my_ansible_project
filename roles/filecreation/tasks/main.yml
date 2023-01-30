@@ -1,0 +1,48 @@
+---
+# tasks file for filecreation
+- name: Check SSH connection
+  wait_for_connection:
+    delay: 5
+    timeout: 10
+  register: checkcon
+
+- name: Show failed message when connection fails
+  fail:
+    msg: The connection is not established
+  when: checkcon is failed
+
+- name: Show success message when connection is success
+  debug:
+    msg: The connection is established
+  when: checkcon is success
+
+- name: Checking existing status of a directory
+  stat:
+    path: "{{ dir }}"
+  register: dirstatus
+
+- name: Showing error message if directory exists
+  fail:
+    msg: The directory exists try new directory
+  when: dirstatus.stat.exists
+
+- name: Creating directories if directory does not exists
+  file:
+   path: "{{ dir }}"
+   state: directory
+   mode: '0755'
+  when: not dirstatus.stat.exists
+
+- name: Adding a blank file within directory
+  file:
+    path: "{{ dir + filename }}"
+    state: touch
+    mode: '0755'
+  when: dir is defined
+
+- name: Writing contenet in blank file
+  lineinfile:
+    path: "{{ dir + filename }}"
+    line: "{{ content }}"
+    insertbefore: EOF
+
