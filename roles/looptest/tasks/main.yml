@@ -1,21 +1,5 @@
 ---
 # tasks file for looptest
-- name: fetching value of local file /home/sayani.bose@dryicelabs.com/playbook/roles/test/tasks/main.yml
-  debug:
-    msg: The details of /home/sayani.bose@dryicelabs.com/playbook/roles/test/tasks/main.yml--->{{lookup('file', '/home/sayani.bose@dryicelabs.com/playbook/roles/test/tasks/main.yml')}}
-
-- name: fetching value of local file /home/sayani.bose@dryicelabs.com/playbook/roles/temp/templates/tempscript.sh.j2
-  debug:
-    msg: The details of /home/sayani.bose@dryicelabs.com/playbook/roles/temp/templates/tempscript.sh.j2-------{{lookup('file', '/home/sayani.bose@dryicelabs.com/playbook/roles/temp/templates/tempscript.sh.j2')}}
-
-- name: adding inner.yml
-  include_tasks: inner.yml
-  loop:
-    - 1
-    - 2
-    - 3
-  loop_control:
-    loop_var: outer_item
 
 - name: printing the values which is greater than 5
   command: echo "{{ item }}"
