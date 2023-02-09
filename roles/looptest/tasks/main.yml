@@ -33,19 +33,7 @@
   loop: [ 0, 2, 4, 6, 8, 10, 12, 14, 16 ]
   when: item > 5
 
-- name: Creating s new file
-  file:
-    path: /tmp/sayani/dir1/b.txt
-    state: touch
-    mode: '0755'
 
-- name: Storing file content in a variable
-  set_fact:
-    storevalue: "{{ lookup ( 'file', '/home/sayani.bose@dryicelabs.com/playbook/roles/test/tasks/main.yml') }}"
 
-- name: Writing the one file's content into another file
-  lineinfile:
-    path: /tmp/sayani/dir1/b.txt
-    line: "{{ storevalue }}"
-    insertbefore: EOF
+
 

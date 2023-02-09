@@ -39,8 +39,8 @@
     - { fname: 'Sayani' , lname: 'Bose' , wlocation: 'Noida' }
     - { fname: 'Sandipan' , lname: 'Sen' , wlocation: 'Noida' }
     - { fname: 'Uday' , lname: 'Suguli' , wlocation: 'Bangalore' }
-    - { fname: 'Tharun' , lname: 'Teja' , wlocation: 'Bangalore' }
     - { fname: 'Ananya' , lname: 'S' , wlocation: 'Bangalore' }
+
 - name: Using loop with dictionary
   debug:
     msg:
