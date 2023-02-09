@@ -1,0 +1,131 @@
+---
+# tasks file for looptest2
+- name: Check SSH connection
+  wait_for_connection:
+    delay: 5
+    timeout: 10
+  register: checkcon
+
+- name: Showing success message
+  debug:
+    msg: " Connection is successful"
+  when: checkcon is success
+
+- name: Showing error message
+  fail:
+    msg: "Connection is unsuccessful"
+  when: checkcon is failure
+
+- name: echo the values
+  command: echo "{{ item }}"
+  loop:
+    - a
+    - b
+    - c
+    - d
+  register: loopvalue
+
+- name: Printing the loopvalue
+  debug:
+    msg: "{{ loopvalue }}"
+
+- name: working with loop module using hash value
+  debug:
+    msg:
+      - " Hi {{ item.fname }}, Welcome to HCL"
+      - " Your last name according to HCL is {{ item.lname }}"
+      - " Your current working location in HCL is {{ item.wlocation }}"
+  loop:
+    - { fname: 'Sayani' , lname: 'Bose' , wlocation: 'Noida' }
+    - { fname: 'Sandipan' , lname: 'Sen' , wlocation: 'Noida' }
+    - { fname: 'Uday' , lname: 'Suguli' , wlocation: 'Bangalore' }
+    - { fname: 'Tharun' , lname: 'Teja' , wlocation: 'Bangalore' }
+    - { fname: 'Ananya' , lname: 'S' , wlocation: 'Bangalore' }
+- name: Using loop with dictionary
+  debug:
+    msg:
+      - " The {{ item.key }} of the fruit is {{ item.value }}"
+  loop: "{{ fruit | dict2items }}"
+  vars:
+    fruit:
+      name: Apple
+      color: Red
+      shape: oval
+      benifits: 'healthy , good for health'
+
+- name: Deleting multiple files using loop
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: "{{ item.state }}"
+  loop:
+    - { path: '/tmp/ab.txt' , state: 'absent' }
+    - { path: '/tmp/abc.txt' , state: 'absent' }
+    - { path: '/tmp/sayani/dir1/ab.txt' , state: 'absent' }
+    - { path: '/tmp/sayani/dir1/abc.txt' , state: 'absent' }
+  when: checkcon is success
+
+- name: Creating multiple blank files using loop
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+    state: "{{ item.state }}"
+  loop:
+    - { path: '/tmp/sayani/dir1/lfile1.txt' , mode: '0744' , state: 'touch' }
+    - { path: '/tmp/sayani/dir1/lfile2.txt' , mode: '0744' , state: 'touch' }
+    - { path: '/tmp/sayani/dir1/lfile3.txt' , mode: '0744' , state: 'touch' }
+  when: checkcon is success
+- name: Adding content to the files
+  copy:
+    dest: "{{ item.dest }}"
+    content: |
+       "{{ item.content }}"
+  loop:
+          - { dest: '/tmp/sayani/dir1/lfile1.txt' , content: 'This is lfile1 which is created by loop' }
+          - { dest: '/tmp/sayani/dir1/lfile2.txt' , content: 'This is lfile2 which is created by loop' }
+          - { dest: '/tmp/sayani/dir1/lfile3.txt' , content: 'This is lfile3 which is created by loop' }
+  when: checkcon is success
+
+- name: Printing messege with interval
+  debug:
+    msg: "{{ item }}"
+  loop:
+    - Sayani
+    - Bose
+  loop_control:
+    pause: 3
+
+- name: Using loop index
+  debug:
+    msg: "The city is-->{{ item }} and loop index is--> {{ i }}"
+  loop:
+    - Kolkata
+    - Mumbai
+    - Noida
+    - Delhi
+    - Bangalore
+    - Pune
+  loop_control:
+    index_var: i
+- name: Creating file
+  ansible.builtin.file:
+    path: /tmp/sayani/dir1/loopfile.txt
+    state: touch
+  when: checkcon is success
+
+- name: Writing data in a file using loop
+  lineinfile:
+    path: /tmp/sayani/dir1/loopfile.txt
+    line:
+       - " The firstname is {{ item.fname }}"
+       - " The lastname is {{ item.lname }}"
+       - " The permanent address is {{ item.padrs}}"
+       - " The present address is {{ item.pradrs }}"
+    insertbefore: EOF
+  loop:
+    - { fname: 'Sayani' , lname: 'Bose' , padrs: 'West Bengal' , pradrs: 'Noida' }
+    - { fname: 'Sandipan' , lname: 'Sen' , padrs: 'West Bengal' , pradrs: 'Noida' }
+    - { fname: 'Chandana' , lname: 'S' , padrs: 'Bangalore' , pradrs: 'Bangalore' }
+    - { fname: 'Ananya' , lname: 'S' , padrs: 'Bangalore' , pradrs: 'Bangalore' }
+  when: checkcon is success
+
+

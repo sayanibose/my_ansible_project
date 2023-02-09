@@ -1,0 +1,6 @@
+- name: looptest2 playbook
+  hosts: all
+  gather_facts: false
+  roles:
+    - lopptest2
+
