@@ -2,5 +2,5 @@
   hosts: all
   gather_facts: false
   roles:
-    - lopptest2
+    - looptest2
 
